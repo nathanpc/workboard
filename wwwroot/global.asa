@@ -1,0 +1,14 @@
+<script language="VBScript" runat="server">
+
+' Application just started.
+Sub Application_OnStart
+	' TODO: Open database connection.
+	Application("ApplicationName") = "WorkBoard"
+End Sub
+
+' Application is about to be stopped.
+Sub Application_OnEnd
+	' TODO: Close database connection.
+End Sub
+
+</script>

@@ -1,0 +1,26 @@
+BODY
+{
+    BACKGROUND: white;
+    WIDTH: 600px
+}
+#main
+{
+}
+#footer
+{
+    TEXT-ALIGN: center
+}
+#header
+{
+}
+.no-link-highlight
+{
+    TEXT-DECORATION: none
+}
+.no-link-highlight IMG
+{
+    BORDER-RIGHT: medium none;
+    BORDER-TOP: medium none;
+    BORDER-LEFT: medium none;
+    BORDER-BOTTOM: medium none
+}
