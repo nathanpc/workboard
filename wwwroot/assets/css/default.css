@@ -1,26 +1,23 @@
-BODY
-{
-    BACKGROUND: white;
-    WIDTH: 600px
+/**
+ * default.css
+ * Default stylesheet.
+ *
+ * @author Nathan Campos <nathan@innoveworkshop.com>
+ */
+
+body {
+    background: white;
+    width: 600px;
 }
-#main
-{
+
+#footer {
+    text-align: center;
 }
-#footer
-{
-    TEXT-ALIGN: center
+
+.no-link-highlight {
+    text-decoration: none;
 }
-#header
-{
-}
-.no-link-highlight
-{
-    TEXT-DECORATION: none
-}
-.no-link-highlight IMG
-{
-    BORDER-RIGHT: medium none;
-    BORDER-TOP: medium none;
-    BORDER-LEFT: medium none;
-    BORDER-BOTTOM: medium none
+
+.no-link-highlight img {
+    border: none;
 }

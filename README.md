@@ -17,7 +17,7 @@ It'll be equaly messy, only this time it's digital.
 I love playing around with retro technologies, and since this was a simple
 project, that most likely I'm the only one that's going to use, I've decided
 to have some fun and build it using [Classic ASP](https://en.wikipedia.org/wiki/Active_Server_Pages)
-and [Visual InterDev 6.0](https://en.wikipedia.org/wiki/Visual_InterDev).
+and [Macromedia Dreamweaver MX 2004](https://en.wikipedia.org/wiki/Adobe_Dreamweaver).
 
 
 ## License
