@@ -27,8 +27,9 @@ list of the current workspaces that I'm working on:</p>
 </ul>
 
 <p>If you would like to know more about this project please visit its
-<a href="#">GitHub page</a>. If you're actually considering using this please
-let me know, because I would be very interested in knowing more about you.</p>
+<a href="https://github.com/nathanpc/workboard">GitHub page</a>. If you're
+actually considering using this please let me know, because I would be very
+interested in knowing more about you.</p>
 
 <p>I love playing around with retro technologies, and since this was a simple
 project, that most likely I'm the only one that's going to use, I've decided
