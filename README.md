@@ -1,6 +1,6 @@
 # WorkBoard
 
-A personal "bulletin board" web interface for your personal projects.
+A "bulletin board" web interface for brainstorming your personal projects.
 
 
 ## What is this?

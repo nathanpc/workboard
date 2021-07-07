@@ -1,10 +1,10 @@
 <!-- #include virtual="/_includes/templates/header.asp" -->
 
-<p>This is a "bulletin board" web interface for my personal projects. I know
-it looks extremely old, but that's exactly the idea as it was inspired by the
-amazing <a href="http://wiki.c2.com/">WikiWikiWeb</a>. I want to be able to
-open this in any browser that you can image and still be able to read its
-contents and post things to it.</p>
+<p>This is a "bulletin board" web interface for brainstorming my personal
+projects. I know it looks extremely old, but that's exactly the idea as it was
+inspired by the amazing <a href="http://wiki.c2.com/">WikiWikiWeb</a>. I want
+to be able to open this in any browser that you can image and still be able to
+read its contents and post things to it.</p>
 
 <p>In order to keep things organized and prevent this from becoming the digital
 equivalent to my workbench surface filled with Post-Its (which is exactly what
