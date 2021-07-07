@@ -5,15 +5,46 @@
  * @author Nathan Campos <nathan@innoveworkshop.com>
  */
 
+/**
+ * Page-wise definitions.
+ */
 body {
     background: white;
     width: 600px;
 }
 
+/**
+ * Regular post.
+ */
+#main .post .info {
+	text-align: right;
+}
+
+/**
+ * Post submission.
+ */
+#main .post form #tinymce {
+	max-width: 100%;
+}
+
+#main .post form .send {
+	text-align: center;
+}
+
+#main .post form .send input {
+	width: 100px;
+}
+
+/**
+ * Footer
+ */
 #footer {
     text-align: center;
 }
 
+/**
+ * Helper classes.
+ */
 .no-link-highlight {
     text-decoration: none;
 }

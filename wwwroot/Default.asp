@@ -1,3 +1,4 @@
+<!-- #include virtual="/_includes/base.asp" -->
 <!-- #include virtual="/_includes/templates/header.asp" -->
 
 <p>This is a "bulletin board" web interface for brainstorming my personal
@@ -13,15 +14,16 @@ which organizes posts into their respective projects or categories. Here's a
 list of the current workspaces that I'm working on:</p>
 
 <ul>
-	<li><a href="#">MintyCharger</a></li>
+	<li><a href="/Workspace.asp?name=MintyCharger">MintyCharger</a></li>
 	<li><a href="#">HV Power Supply</a></li>
 	<li><a href="#">Something</a></li>
 	<li><a href="#">Another thing</a></li>
 	<li>
-		<form action="/Workspace.asp">
+		<form method="post" action="/Workspace.asp" id="newws" name="newws">
+			<input type="hidden" name="action" value="newws" />
 			<label for="wsname">New Workspace:</label>
 			<input type="text" id="wsname" name="wsname" />
-			<input type="submit" value="Submit">
+			<input type="submit" value="Submit" />
 		</form>
 	</li>
 </ul>
@@ -35,7 +37,7 @@ interested in knowing more about you.</p>
 project, that most likely I'm the only one that's going to use, I've decided
 to have some fun and build it using
 <a href="http://en.wikipedia.org/wiki/Active_Server_Pages">Classic ASP</a>
-and <a href=http://en.wikipedia.org/wiki/Visual_InterDev">Visual InterDev
-6.0</a>.</p>
+and <a href="https://en.wikipedia.org/wiki/Adobe_Dreamweaver">Macromedia
+Dreamweaver MX 2004</a>.</p>
 
 <!-- #include virtual="/_includes/templates/footer.asp" -->
