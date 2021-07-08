@@ -9,6 +9,12 @@ Class Post
 	Private strContent
 	Private dtCreated
 	
+	' Object constructor.
+	Private Sub Class_Initialize()
+		ID = -1
+		CreatedDate = Now()
+	End Sub
+	
 	' Populates this class from a Post ID.
 	Public Sub PopulateFromID(intPostID)
 		ID = intPostID
