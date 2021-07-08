@@ -19,7 +19,7 @@ End Function
 
 ' Gets the workspace ID from its name. -1 if one wasn't found.
 Public Function GetWorkspaceIDFromName(strName)
-	GetWorkspaceIDFromName = 0
+	GetWorkspaceIDFromName = -1
 End Function
 
 ' Get posts for a given workspace ID.
@@ -39,4 +39,8 @@ Public Function GetPostsByWorkspaceID(intWorkspaceID)
 	GetPostsByWorkspaceID = a_objPosts
 End Function
 
+' Checks if a workspace ID is actually valid.
+Public Function IsWorkspaceIDValid(intID)
+	IsWorkspaceIDValid = intID >= 0
+End Function
 %>
