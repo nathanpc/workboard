@@ -7,6 +7,7 @@
 
 ' Private variables.
 Dim objWorkspace
+Dim objPost
 
 ' Initialize workspace object and set the article title.
 Set objWorkspace = New Workspace
@@ -27,9 +28,23 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 			Response.End
 		End If
 		
-		' TODO: Create workspace in database.
-		objWorkspace.ID = 123
+		' Create new workspace.
+		objWorkspace.CreatedDate = Now()
+		objWorkspace.Commit
 	ElseIf Request.Form("action") = "newpost" Then
+		Set objPost = New Post
+		
+		' Check if we have any content.
+		objPost.Content = Request.Form("content")
+		If objPost.Content = vbNullString Then
+			Response.Status = "400 Bad Request"
+			Response.Write "<h1>No content for this new post was provided.</h1>"
+			Response.End
+		End If
+		
+		' Create new post.
+		objPost.CreatedDate = Now()
+		objPost.Commit
 	Else
 		' Invalid action or no action field was supplied.
 		Response.Status = "400 Bad Request"
@@ -65,7 +80,6 @@ End If
 	</p>
 <% Else %>
 	<!-- Posts -->
-	<% Dim objPost %>
 	<% For Each objPost In objWorkspace.GetPosts() %>
 		<!-- Post #<%= objPost.ID %> -->
 		<div class="post" id="post<%= objPost.ID %>">

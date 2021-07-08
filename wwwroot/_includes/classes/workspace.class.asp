@@ -36,6 +36,16 @@ Class Workspace
 		ID = 0
 	End Sub
 	
+	' Saves the data from this object to the database.
+	Public Sub Commit()
+		If Not Exists Then
+			' TODO: Create the new entry in the database.
+			ID = 123
+		End If
+		
+		' TODO: Update the entry in the database.
+	End Sub
+	
 	' Get posts for this workspace.
 	Public Function GetPosts()
 		Dim a_objPosts(1)
