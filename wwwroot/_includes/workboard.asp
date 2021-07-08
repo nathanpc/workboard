@@ -19,7 +19,13 @@ End Function
 
 ' Gets the workspace ID from its name. -1 if one wasn't found.
 Public Function GetWorkspaceIDFromName(strName)
-	GetWorkspaceIDFromName = -1
+	' Check for absent name.
+	If strName = vbNullString Then
+		GetWorkspaceIDFromName = -1
+		Exit Function
+	End If
+	
+	GetWorkspaceIDFromName = 0
 End Function
 
 ' Get posts for a given workspace ID.

@@ -9,17 +9,42 @@
 Dim intWorkspaceID
 Dim strWorkspaceName
 
-' Check if we actually have a workspace name to work with.
+' Get workspace ID and set the article title.
 strWorkspaceName = Request.QueryString("name")
+intWorkspaceID = GetWorkspaceIDFromName(strWorkspaceName)
+SetArticleTitle strWorkspaceName
+
+' Check if we are trying to operate on a workspace.
+If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
+	If Request.Form("action") = "newws" Then
+		' New workspace.
+		strWorkspaceName = Request.Form("wsname")
+		intWorkspaceID = GetWorkspaceIDFromName(strWorkspaceName)
+		
+		' Check if workspace with this name already exists.
+		If IsWorkspaceIDValid(intWorkspaceID) Then
+			Response.Status = "400 Bad Request"
+			Response.Write "<h1>A workspace with this name (" & _
+				strWorkspaceName & ") already exists.</h1>"
+			Response.End
+		End If
+		
+		' TODO: Create workspace in database.
+		intWorkspaceID = 123
+	ElseIf Request.Form("action") = "newpost" Then
+	Else
+		' Invalid action or no action field was supplied.
+		Response.Status = "400 Bad Request"
+		Response.End
+	End If
+End If
+
+' Check if we actually have a workspace name to work with.
 If strWorkspaceName = vbNullString Then
 	' Display the proper error.
 	Response.Status = "400 Bad Request"
 	Response.End
 End If
-
-' Get workspace ID and set the article title.
-intWorkspaceID = GetWorkspaceIDFromName(strWorkspaceName)
-SetArticleTitle strWorkspaceName
 %>
 
 <!-- #include virtual="/_includes/templates/header.asp" -->
