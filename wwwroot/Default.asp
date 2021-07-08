@@ -14,10 +14,14 @@ which organizes posts into their respective projects or categories. Here's a
 list of the current workspaces that I'm working on:</p>
 
 <ul>
-	<li><a href="/Workspace.asp?name=MintyCharger">MintyCharger</a></li>
-	<li><a href="#">HV Power Supply</a></li>
-	<li><a href="#">Something</a></li>
-	<li><a href="#">Another thing</a></li>
+	<% Dim strName %>
+	<% For Each strName In GetWorkspaces() %>
+		<li>
+			<a href="/Workspace.asp?name=<%= Server.URLEncode(strName) %>">
+				<%= strName %>
+			</a>
+		</li>
+	<% Next %>
 	<li>
 		<form method="post" action="/Workspace.asp" id="newws" name="newws">
 			<input type="hidden" name="action" value="newws" />

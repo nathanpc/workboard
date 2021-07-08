@@ -49,5 +49,6 @@ Public Sub ListServerVariables()
 	Next
 	Response.Write "</ul>"
 End Sub
-
 %>
+
+<!-- #include virtual="/_includes/workboard.asp" -->

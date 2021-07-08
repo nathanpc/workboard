@@ -1,18 +1,34 @@
 <!-- #include virtual="/_includes/base.asp" -->
-<% SetArticleTitle Request.QueryString("name") %>
+<%
+''' Workspace.asp
+''' Page that displays everything related to a selected workspace.
+'''
+''' Author: Nathan Campos <nathan@innoveworkshop.com>
+
+Dim intWorkspaceID
+intWorkspaceID = GetWorkspaceIDFromName(Request.QueryString("name"))
+
+SetArticleTitle Request.QueryString("name")
+
+' TODO: Detect if we actually have a workspace.
+%>
+
 <!-- #include virtual="/_includes/templates/header.asp" -->
 
-<div class="post" id="post123">
-	<div class="content">
-		<p>This is the content of a post.</p>
-		<p><% ListServerVariables() %></p>
+<!-- Posts -->
+<% Dim objPost %>
+<% For Each objPost In GetPostsByWorkspaceID(intWorkspaceID) %>
+	<div class="post" id="post<%= objPost.ID %>">
+		<div class="content">
+			<%= objPost.Content %>
+		</div>
+		<div class="info">
+			<p><a href="#post<%= objPost.ID %>"><%= objPost.CreatedDate %></a></p>
+		</div>
 	</div>
-	<div class="info">
-		<p><a href="#post123"><%= Now() %></a></p>
-	</div>
-</div>
-
-<hr>
+	
+	<hr>
+<% Next %>
 
 <!-- New Post Editor -->
 <!-- #include virtual="/_includes/templates/tinymce.asp" -->
