@@ -1,14 +1,20 @@
+<!-- #include virtual="/_includes/config.asp" -->
 <script language="VBScript" runat="server">
+''' global.asa
+''' ASP application configuration.
+'''
+''' Author: Nathan Campos <nathan@innoveworkshop.com>
 
 ' Application just started.
 Sub Application_OnStart
-	' TODO: Open database connection.
 	Application("ApplicationName") = "WorkBoard"
+	Application("ConnectionString") = "Provider=" & DB_PROVIDER & "; " & _
+		"Data Source=" & DB_SERVER & "; Database=" & DB_NAME & "; User ID=" & _
+		DB_USER & "; Password=" & DB_PASS
 End Sub
 
 ' Application is about to be stopped.
 Sub Application_OnEnd
-	' TODO: Close database connection.
+	
 End Sub
-
 </script>

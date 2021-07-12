@@ -12,6 +12,18 @@ a while. This project aims to replace all those Post-Its and random files.
 It'll be equaly messy, only this time it's digital.
 
 
+## How to set this up?
+
+Firstly you'll need Classic ASP a capable [IIS 6.0+](https://www.iis.net/) server
+setup and a [SQL Server 2005+](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
+instance running.
+
+After those prerequisites are met, import the database template file
+`initialize_database.sql` into your SQL Server instance. After that's all done,
+rename the `config.template.asp` (located in `wwwroot/_includes/`) to `config.asp`
+and edit the database parameters to meet your configuration.
+
+
 ## Why Classic ASP?
 
 I love playing around with retro technologies, and since this was a simple

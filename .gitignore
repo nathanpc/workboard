@@ -1,3 +1,6 @@
+# Private files.
+config.asp
+
 # Misc.
 .DS_Store
 Thumbs.db
