@@ -19,7 +19,7 @@ Public Function GetWorkspaces()
 	idxWorkspace = 0
 	Set objRecordSet = objConn.Execute("SELECT workspace_id FROM workspaces " & _
 		"ORDER BY name ASC")
-	ReDim Preserve a_objWorkspaces(CountRowsInRecordSet(objRecordSet) - 1)
+	ReDim Preserve a_objWorkspaces(objRecordSet.RecordCount - 1)
 	While Not objRecordSet.EOF
 		Set a_objWorkspaces(idxWorkspace) = New Workspace
 		a_objWorkspaces(idxWorkspace).PopulateFromID(objRecordSet("workspace_id"))

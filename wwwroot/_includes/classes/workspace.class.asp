@@ -141,17 +141,44 @@ Class Workspace
 	
 	' Get posts for this workspace.
 	Public Function GetPosts()
-		Dim a_objPosts(1)
+		Dim objConn
+		Dim objCommand
+		Dim objRecordSet
+		Dim a_objPosts()
+		Dim idxPosts
+	
+		' Establish connection to the database and set things up.
+		Set objConn = OpenDatabaseConnection
+		Set objCommand = Server.CreateObject("ADODB.Command")
+		objCommand.ActiveConnection = objConn
 		
-		' TODO: Get data from database.
-		Set a_objPosts(0) = New Post
-		a_objPosts(0).ID = 345
-		a_objPosts(0).Content = "<p>Hello, <b>world</b>!</p>"
-		a_objPosts(0).CreatedDate = Now()
-		Set a_objPosts(1) = New Post
-		a_objPosts(1).ID = 789
-		a_objPosts(1).Content = "<p>Second Hello, <b>world</b>!</p>"
-		a_objPosts(1).CreatedDate = Now()
+		' Prepate the statement and execute it.
+		objCommand.CommandText = "SELECT post_id FROM posts WHERE workspace_id = ?"
+		objCommand.Parameters.Append objCommand.CreateParameter("workspace_id", _
+			adInteger, adParamInput, , ID)
+		Set objRecordSet = objCommand.Execute
+		
+		' Check if we got something.
+		If Not objRecordSet.EOF Then
+			' Initialize the posts array.
+			idxPosts = 0
+			ReDim Preserve a_objPosts(objRecordSet.RecordCount - 1)
+			
+			' Go through retrieved posts.
+			While Not objRecordSet.EOF
+				Set a_objPosts(idxPosts) = New Post
+				a_objPosts(idxPosts).PopulateFromID objRecordSet("post_id")
+				
+				idxPosts = idxPosts + 1
+				objRecordSet.MoveNext
+			Wend
+		End If
+		
+		' Clean up.
+		objRecordSet.Close
+		Set objRecordSet = Nothing
+		Set objCommand = Nothing
+		objConn.Close
 		
 		GetPosts = a_objPosts
 	End Function

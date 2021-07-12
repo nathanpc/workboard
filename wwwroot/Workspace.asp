@@ -35,15 +35,17 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 		' New post
 		Set objPost = New Post
 		
-		' Check if we have any content.
-		objPost.Content = Request.Form("content")
-		If objPost.Content = vbNullString Then
+		' Check if the request was valid.
+		If (Request.Form("content") = vbNullString) Or _	
+				(Request.Form("workspaceid") = vbNullString) Then
 			Response.Status = "400 Bad Request"
 			Response.Write "<h1>No content for this new post was provided.</h1>"
 			Response.End
 		End If
 		
-		' Create new post.
+		' Populate the post object with request data and save to the database.
+		objPost.Content = Request.Form("content")
+		objPost.WorkspaceID = CInt(Request.Form("workspaceid"))
 		objPost.CreatedDate = Now()
 		objPost.Commit
 	Else
@@ -102,8 +104,11 @@ End If
 	<!-- New Post Editor -->
 	<!-- #include virtual="/_includes/templates/tinymce.asp" -->
 	<div class="post">
-		<form method="post" action="/Workspace.asp" id="newpost" name="newpost">
+		<form method="post" action="<%= GetURLWithQueryString() %>" id="newpost"
+				name="newpost">
 			<input type="hidden" name="action" value="newpost" />
+			<input type="hidden" name="workspaceid"
+				value="<%= objWorkspace.ID %>" />
 			<textarea id="tinymce" name="content" rows="30"
 				style="width: 100%"></textarea>
 			<br>

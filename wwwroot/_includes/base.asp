@@ -8,10 +8,13 @@
 Option Explicit
 
 ' ADO constant definitions.
+Public Const adUseServer = 2
+Public Const adUseClient = 3
 Public Const adParamInput = 1
 Public Const adInteger = 3
 Public Const adDBTimeStamp = 135
 Public Const adVarChar = 200
+Public Const adLongVarChar = 201
 
 ' Private variables.
 Private m_strArticleTitle
@@ -21,26 +24,11 @@ Public Function OpenDatabaseConnection()
 	Dim objConn
 	
 	Set objConn = Server.CreateObject("ADODB.Connection")
+	objConn.CursorLocation = adUseClient
 	objConn.ConnectionString = Application("ConnectionString")
 	objConn.Open
 	
 	Set OpenDatabaseConnection = objConn
-End Function
-
-' Counts the number of records in an ADO RecordSet.
-Public Function CountRowsInRecordSet(adoRecordSet)
-	Dim intCount
-	intCount = 0
-	
-	' Go through RecordSet.
-	While Not adoRecordSet.EOF
-		intCount = intCount + 1
-		adoRecordSet.MoveNext
-	Wend
-	
-	' Rewind RecordSet pointer and return results.
-	adoRecordSet.MoveFirst
-	CountRowsInRecordSet = intCount
 End Function
 
 ' Sets the article title for a page.
