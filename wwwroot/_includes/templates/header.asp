@@ -15,7 +15,7 @@
 						<img src="/assets/image/desktop.bmp"
 							alt="<%= Application("ApplicationName") %>" />
 					</a>
-					<a href="<%= Request.ServerVariables("URL") %>">
+					<a href="<%= GetURLWithQueryString() %>">
 						<%= ArticleTitle() %>
 					</a>
 				</h1>

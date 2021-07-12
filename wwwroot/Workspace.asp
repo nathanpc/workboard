@@ -32,6 +32,7 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 		objWorkspace.CreatedDate = Now()
 		objWorkspace.Commit
 	ElseIf Request.Form("action") = "newpost" Then
+		' New post
 		Set objPost = New Post
 		
 		' Check if we have any content.

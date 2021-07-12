@@ -18,32 +18,125 @@ Class Workspace
 	
 	' Populates this class from a workspace ID.
 	Public Sub PopulateFromID(intWorkspaceID)
-		ID = intWorkspaceID
-		' TODO: Get data from database.
+		Dim objConn
+		Dim objCommand
+		Dim objRecordSet
+	
+		' Establish connection to the database and set things up.
+		Set objConn = OpenDatabaseConnection
+		Set objCommand = Server.CreateObject("ADODB.Command")
+		objCommand.ActiveConnection = objConn
+		
+		' Prepate the statement and execute it.
+		objCommand.CommandText = "SELECT * FROM workspaces WHERE workspace_id = ?"
+		objCommand.Parameters.Append objCommand.CreateParameter("workspace_id", _
+			adInteger, adParamInput, , intWorkspaceID)
+		Set objRecordSet = objCommand.Execute
+		
+		If Not objRecordSet.EOF Then
+			' Got something!
+			ID = intWorkspaceID
+			Title = objRecordSet("name")
+			CreatedDate = objRecordSet("dt")
+		Else
+			' Well, looks like this ID doesn't exist.
+			ID = -1
+		End If
+		
+		' Clean up.
+		objRecordSet.Close
+		Set objRecordSet = Nothing
+		Set objCommand = Nothing
+		objConn.Close
 	End Sub
 	
 	' Populates this class from a workspace name.
 	Public Sub PopulateFromName(strWorkspaceName)
-		Title = strWorkspaceName
+		Dim objConn
+		Dim objCommand
+		Dim objRecordSet
 		
 		' Check for absent name.
+		Title = strWorkspaceName
 		If Title = vbNullString Then
 			ID = -1
 			Exit Sub
 		End If
+	
+		' Establish connection to the database and set things up.
+		Set objConn = OpenDatabaseConnection
+		Set objCommand = Server.CreateObject("ADODB.Command")
+		objCommand.ActiveConnection = objConn
 		
-		' TODO: Get data from database.
-		ID = 0
+		' Prepate the statement and execute it.
+		objCommand.CommandText = "SELECT * FROM workspaces WHERE name = ?"
+		objCommand.Parameters.Append objCommand.CreateParameter("name", adVarChar, _
+			adParamInput, 50, Title)
+		Set objRecordSet = objCommand.Execute
+		
+		' Names are unique so we can just check for a single record.
+		If Not objRecordSet.EOF Then
+			' Got something!
+			ID = objRecordSet("workspace_id")
+			CreatedDate = objRecordSet("dt")
+		Else
+			' Well, looks like this name doesn't exist.
+			ID = -1
+		End If
+		
+		' Clean up.
+		objRecordSet.Close
+		Set objRecordSet = Nothing
+		Set objCommand = Nothing
+		objConn.Close
 	End Sub
 	
 	' Saves the data from this object to the database.
 	Public Sub Commit()
+		Dim objConn
+		Dim objCommand
+		Dim objRecordSet
+	
+		' Establish connection to the database and set things up.
+		Set objConn = OpenDatabaseConnection
+		Set objCommand = Server.CreateObject("ADODB.Command")
+		objCommand.ActiveConnection = objConn
+		
+		' Check if we are creating a new entry.
 		If Not Exists Then
-			' TODO: Create the new entry in the database.
-			ID = 123
+			' Create the new entry in the database.
+			objCommand.CommandText = "INSERT INTO workspaces (name, dt) " & _
+				"VALUES (?, ?)"
+		Else
+			' Update an entry in the database.
+			objCommand.CommandText = "UPDATE workspaces SET name = ?, dt = ? " & _
+				"WHERE workspace_id = ?"
+			objCommand.Parameters.Append objCommand.CreateParameter("workspace_id", _
+				adInteger, adParamInput, , ID)
 		End If
 		
-		' TODO: Update the entry in the database.
+		' Append common parameters and execute the statement.
+		objCommand.Parameters.Append objCommand.CreateParameter("name", adVarChar, _
+			adParamInput, 50, Title)
+		objCommand.Parameters.Append objCommand.CreateParameter("dt", _
+			adDBTimeStamp, adParamInput, , CreatedDate)
+		objCommand.Execute
+		
+		' Get the inserted ID in case of a new entry.
+		If Not Exists Then
+			Set objRecordSet = objConn.Execute("SELECT @@IDENTITY")
+			If Not objRecordSet.EOF Then
+				ID = objRecordSet(0)
+			End If
+			
+			' Clean up.
+			objRecordSet.Close
+			Set objRecordSet = Nothing
+		End If
+	
+		' Clean up.
+		Set objCommand = Nothing
+		objConn.Close
 	End Sub
 	
 	' Get posts for this workspace.

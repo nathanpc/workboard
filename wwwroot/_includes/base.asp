@@ -7,8 +7,41 @@
 
 Option Explicit
 
+' ADO constant definitions.
+Public Const adParamInput = 1
+Public Const adInteger = 3
+Public Const adDBTimeStamp = 135
+Public Const adVarChar = 200
+
 ' Private variables.
 Private m_strArticleTitle
+
+' Opens a connection with the database.
+Public Function OpenDatabaseConnection()
+	Dim objConn
+	
+	Set objConn = Server.CreateObject("ADODB.Connection")
+	objConn.ConnectionString = Application("ConnectionString")
+	objConn.Open
+	
+	Set OpenDatabaseConnection = objConn
+End Function
+
+' Counts the number of records in an ADO RecordSet.
+Public Function CountRowsInRecordSet(adoRecordSet)
+	Dim intCount
+	intCount = 0
+	
+	' Go through RecordSet.
+	While Not adoRecordSet.EOF
+		intCount = intCount + 1
+		adoRecordSet.MoveNext
+	Wend
+	
+	' Rewind RecordSet pointer and return results.
+	adoRecordSet.MoveFirst
+	CountRowsInRecordSet = intCount
+End Function
 
 ' Sets the article title for a page.
 Public Sub SetArticleTitle(strTitle)
@@ -34,6 +67,18 @@ Public Function PageTitle()
 	' Check if we are in an article.
 	If ArticleTitle() <> PageTitle Then
 		PageTitle = ArticleTitle() & " - " & PageTitle
+	End If
+End Function
+
+' Gets the current requested URL with its query string.
+Public Function GetURLWithQueryString()
+	' Get the base URL.
+	GetURLWithQueryString = Request.ServerVariables("URL")
+	
+	' Get the query string if we have any.
+	If Request.ServerVariables("QUERY_STRING") <> vbNullString Then
+		GetURLWithQueryString = GetURLWithQueryString & "?" & _
+			Request.ServerVariables("QUERY_STRING")
 	End If
 End Function
 

@@ -14,11 +14,11 @@ which organizes posts into their respective projects or categories. Here's a
 list of the current workspaces that I'm working on:</p>
 
 <ul>
-	<% Dim strName %>
-	<% For Each strName In GetWorkspaces() %>
+	<% Dim objWorkspace %>
+	<% For Each objWorkspace In GetWorkspaces() %>
 		<li>
-			<a href="/Workspace.asp?name=<%= Server.URLEncode(strName) %>">
-				<%= strName %>
+			<a href="/Workspace.asp?name=<%= Server.URLEncode(objWorkspace.Title) %>">
+				<%= objWorkspace.Title %>
 			</a>
 		</li>
 	<% Next %>

@@ -7,13 +7,33 @@
 
 ' Gets all of the available workspaces.
 Public Function GetWorkspaces()
-	Dim a_strWorkspaces(2)
+	Dim objConn
+	Dim objRecordSet
+	Dim idxWorkspace
+	Dim a_objWorkspaces()
 	
-	' TODO: Get data from database.
-	a_strWorkspaces(0) = "MintyCharger"
-	a_strWorkspaces(1) = "HV PSU"
-	a_strWorkspaces(2) = "Another thing"
+	' Establish connection to the database.
+	Set objConn = OpenDatabaseConnection
 	
-	GetWorkspaces = a_strWorkspaces
+	' Query the database.
+	idxWorkspace = 0
+	Set objRecordSet = objConn.Execute("SELECT workspace_id FROM workspaces " & _
+		"ORDER BY name ASC")
+	ReDim Preserve a_objWorkspaces(CountRowsInRecordSet(objRecordSet) - 1)
+	While Not objRecordSet.EOF
+		Set a_objWorkspaces(idxWorkspace) = New Workspace
+		a_objWorkspaces(idxWorkspace).PopulateFromID(objRecordSet("workspace_id"))
+		
+		idxWorkspace = idxWorkspace + 1
+		objRecordSet.MoveNext
+	Wend
+	
+	' Clean up.
+	objRecordSet.Close
+	Set objRecordSet = Nothing
+	objConn.Close
+	
+	' Send the array back.
+	GetWorkspaces = a_objWorkspaces
 End Function
 %>
