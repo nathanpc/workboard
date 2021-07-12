@@ -39,7 +39,8 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 		If (Request.Form("content") = vbNullString) Or _	
 				(Request.Form("workspaceid") = vbNullString) Then
 			Response.Status = "400 Bad Request"
-			Response.Write "<h1>No content for this new post was provided.</h1>"
+			Response.Write "<h1>No content or workspace ID for this new post " & _
+				"was provided.</h1>"
 			Response.End
 		End If
 		
@@ -47,6 +48,23 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 		objPost.Content = Request.Form("content")
 		objPost.WorkspaceID = CInt(Request.Form("workspaceid"))
 		objPost.CreatedDate = Now()
+		objPost.Commit
+	ElseIf Request.Form("action") = "editpost" Then
+		' New post
+		Set objPost = New Post
+		
+		' Check if the request was valid.
+		If (Request.Form("content") = vbNullString) Or _	
+				(Request.Form("postid") = vbNullString) Then
+			Response.Status = "400 Bad Request"
+			Response.Write "<h1>No content or post ID for this new post was" & _
+				"provided.</h1>"
+			Response.End
+		End If
+		
+		' Populate the post object with database and request data and save.
+		objPost.PopulateFromID(CInt(Request.Form("postid")))
+		objPost.Content = Request.Form("content")
 		objPost.Commit
 	Else
 		' Invalid action or no action field was supplied.
@@ -82,19 +100,45 @@ End If
 		</form>
 	</p>
 <% Else %>
+	<!-- TinyMCE WYSIWYG Editor -->
+	<!-- #include virtual="/_includes/templates/tinymce.asp" -->
+	
 	<!-- Posts -->
 	<% For Each objPost In objWorkspace.GetPosts() %>
+		<% Dim blnEditable %>
+		<% blnEditable = (objPost.ID = CInt(Request.QueryString("edit"))) %>
+		
 		<!-- Post #<%= objPost.ID %> -->
 		<div class="post" id="post<%= objPost.ID %>">
 			<div class="content">
-				<%= objPost.Content %>
+				<% If Not blnEditable Then %>
+					<%= objPost.Content %>
+				<% Else %>
+					<!-- Post Editor -->
+					<form method="post" id="editpost" name="editpost"
+							action="/Workspace.asp?name=<%= Server.URLEncode(objWorkspace.Title) %>">
+						<input type="hidden" name="action" value="editpost" />
+						<input type="hidden" name="postid" value="<%= objPost.ID %>" />
+						<textarea id="tinymce" name="content" rows="30"
+							style="width: 100%"><%= objPost.Content %></textarea>
+						<br>
+						<div class="send">
+							<input type="submit" value="Submit" />
+						</div>
+					</form>
+				<% End If %>
 			</div>
 			<div class="info">
-				<p>
-					<a href="#post<%= objPost.ID %>">
-						<%= objPost.CreatedDate %>
-					</a>
-				</p>
+				<% If Not blnEditable Then %>
+					<p>
+						<a href="#post<%= objPost.ID %>">
+							<%= objPost.CreatedDate %>
+						</a>
+						<a href="<%= GetURLWithQueryString() & "&edit=" & objPost.ID %>">
+							<img class="edit" src="/assets/image/pencil.ico" />
+						</a>
+					</p>
+				<% End If %>
 			</div>
 		</div>
 		
@@ -102,7 +146,6 @@ End If
 	<% Next %>
 	
 	<!-- New Post Editor -->
-	<!-- #include virtual="/_includes/templates/tinymce.asp" -->
 	<div class="post">
 		<form method="post" action="<%= GetURLWithQueryString() %>" id="newpost"
 				name="newpost">

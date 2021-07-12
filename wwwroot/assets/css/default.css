@@ -20,6 +20,11 @@ body {
 	text-align: right;
 }
 
+#main .post .info img.edit {
+	max-height: 13px;
+	margin-left: 5px;
+}
+
 /**
  * Post submission.
  */

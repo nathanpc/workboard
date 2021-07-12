@@ -111,8 +111,6 @@ Class Workspace
 			' Update an entry in the database.
 			objCommand.CommandText = "UPDATE workspaces SET name = ?, dt = ? " & _
 				"WHERE workspace_id = ?"
-			objCommand.Parameters.Append objCommand.CreateParameter("workspace_id", _
-				adInteger, adParamInput, , ID)
 		End If
 		
 		' Append common parameters and execute the statement.
@@ -120,6 +118,10 @@ Class Workspace
 			adParamInput, 50, Title)
 		objCommand.Parameters.Append objCommand.CreateParameter("dt", _
 			adDBTimeStamp, adParamInput, , CreatedDate)
+		If Exists Then
+			objCommand.Parameters.Append objCommand.CreateParameter("workspace_id", _
+				adInteger, adParamInput, , ID)
+		End If
 		objCommand.Execute
 		
 		' Get the inserted ID in case of a new entry.

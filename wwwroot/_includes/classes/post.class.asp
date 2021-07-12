@@ -72,8 +72,6 @@ Class Post
 			' Update an entry in the database.
 			objCommand.CommandText = "UPDATE posts SET content = ?, dt = ?, " & _
 				"workspace_id = ? WHERE post_id = ?"
-			objCommand.Parameters.Append objCommand.CreateParameter("post_id", _
-				adInteger, adParamInput, , ID)
 		End If
 		
 		' Append common parameters and execute the statement.
@@ -83,6 +81,10 @@ Class Post
 			adDBTimeStamp, adParamInput, , CreatedDate)
 		objCommand.Parameters.Append objCommand.CreateParameter("workspace_id", _
 			adInteger, adParamInput, , WorkspaceID)
+		If Exists Then
+			objCommand.Parameters.Append objCommand.CreateParameter("post_id", _
+				adInteger, adParamInput, , ID)
+		End If
 		objCommand.Execute
 		
 		' Get the inserted ID in case of a new entry.
