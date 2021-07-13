@@ -42,34 +42,56 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 			Response.End
 		End If
 		
+		' Populate the workspace object.
+		objWorkspace.PopulateFromID Request.Form("workspaceid")
+		
 		' Populate the post object with request data and save to the database.
 		objPost.Content = Request.Form("content")
 		objPost.WorkspaceID = CInt(Request.Form("workspaceid"))
 		objPost.CreatedDate = Now()
 		objPost.Commit
+		
+		' Redirect to highlight the new post.
+		Response.Redirect "/Workspace.asp?name=" & Server.URLEncode(objWorkspace.Title) & _
+			"#post" & objPost.ID
 	ElseIf Request.Form("action") = "editpost" Then
 		' New post
 		Set objPost = New Post
 		
 		' Check if the request was valid.
 		If (Request.Form("content") = vbNullString) Or _	
-				(Request.Form("postid") = vbNullString) Then
+				(Request.Form("postid") = vbNullString) Or _
+				(Request.Form("workspaceid") = vbNullString) Then
 			Response.Status = "400 Bad Request"
-			Response.Write "<h1>No content or post ID for this new post was" & _
-				"provided.</h1>"
+			Response.Write "<h1>No content or post ID or workspace ID for this " & _
+				"new post was provided.</h1>"
 			Response.End
 		End If
 		
+		' Populate the workspace object.
+		objWorkspace.PopulateFromID Request.Form("workspaceid")
+		
 		' Populate the post object with database and request data and save.
-		objPost.PopulateFromID(CInt(Request.Form("postid")))
+		objPost.PopulateFromID CInt(Request.Form("postid"))
 		objPost.Content = Request.Form("content")
 		objPost.Commit
+		
+		' Redirect to highlight the new post.
+		Response.Redirect "/Workspace.asp?name=" & Server.URLEncode(objWorkspace.Title) & _
+			"#post" & objPost.ID
 	Else
 		' Invalid action or no action field was supplied.
 		Response.Status = "400 Bad Request"
 		Response.End
 	End If
+	
+	' Make sure we have a fully populated workspace object.
+	If Not objWorkspace.Exists Then
+		objWorkspace.PopulateFromID Request.Form("workspaceid")
+	End If
 Else
+	Dim strWorkspaceName
+	
 	' Check if we need to delete a post.
 	If Request.QueryString("delete") <> vbNullString Then
 		Dim objDelPost
@@ -97,8 +119,14 @@ Else
 		Response.End
 	End If
 	
+	' Sanitize the workspace name since IE doesn't like URL parameters and ID references.
+	strWorkspaceName = Request.QueryString("name")
+	If InStr(strWorkspaceName, "#post") > 0 Then
+		strWorkspaceName = Left(strWorkspaceName, InStr(strWorkspaceName, "#post") - 1)
+	End If
+	
 	' Populate the workspace object.
-	objWorkspace.PopulateFromName Request.QueryString("name")
+	objWorkspace.PopulateFromName strWorkspaceName
 End If
 
 ' Set the article title.
@@ -140,9 +168,10 @@ SetArticleTitle objWorkspace.Title
 				<% Else %>
 					<!-- Post Editor -->
 					<form method="post" id="editpost" name="editpost"
-							action="/Workspace.asp?name=<%= Server.URLEncode(objWorkspace.Title) %>">
+							action="/Workspace.asp">
 						<input type="hidden" name="action" value="editpost" />
 						<input type="hidden" name="postid" value="<%= objPost.ID %>" />
+						<input type="hidden" name="workspaceid" value="<%= objWorkspace.ID %>" />
 						<textarea id="tinymce" name="content" rows="30"
 							style="width: 100%"><%= objPost.Content %></textarea>
 						<br>
@@ -174,11 +203,10 @@ SetArticleTitle objWorkspace.Title
 	
 	<!-- New Post Editor -->
 	<div class="post">
-		<form method="post" action="<%= GetURLWithQueryString() %>" id="newpost"
+		<form method="post" action="/Workspace.asp" id="newpost"
 				name="newpost">
 			<input type="hidden" name="action" value="newpost" />
-			<input type="hidden" name="workspaceid"
-				value="<%= objWorkspace.ID %>" />
+			<input type="hidden" name="workspaceid" value="<%= objWorkspace.ID %>" />
 			<textarea id="tinymce" name="content" rows="30"
 				style="width: 100%"></textarea>
 			<br>
