@@ -187,7 +187,7 @@ Class Workspace
 
 	' Checks if this workspace exists.
 	Public Function Exists()
-		Exists = (ID >= 0)
+		Exists = CInt(ID) >= 0
 	End Function
 	
 	Public Property Get ID()
