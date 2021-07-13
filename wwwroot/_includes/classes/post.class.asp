@@ -103,6 +103,35 @@ Class Post
 		Set objCommand = Nothing
 		objConn.Close
 	End Sub
+	
+	' Deletes this object from the database.
+	Public Sub Trash()
+		Dim objConn
+		Dim objCommand
+		
+		' Make sure that we actually exist.
+		If Not Exists Then
+			Exit Sub
+		End If
+	
+		' Establish connection to the database and set things up.
+		Set objConn = OpenDatabaseConnection
+		Set objCommand = Server.CreateObject("ADODB.Command")
+		objCommand.ActiveConnection = objConn
+		
+		' Prepare and execute the statement.
+		objCommand.CommandText = "DELETE FROM posts WHERE post_id = ?"
+		objCommand.Parameters.Append objCommand.CreateParameter("post_id", _
+			adInteger, adParamInput, , ID)
+		objCommand.Execute
+		
+		' Reset the ID.
+		ID = -1
+	
+		' Clean up.
+		Set objCommand = Nothing
+		objConn.Close
+	End Sub
 
 	' Checks if this workspace exists.
 	Public Function Exists()

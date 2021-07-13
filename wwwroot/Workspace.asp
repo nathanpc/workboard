@@ -9,10 +9,8 @@
 Dim objWorkspace
 Dim objPost
 
-' Initialize workspace object and set the article title.
+' Initialize workspace object.
 Set objWorkspace = New Workspace
-objWorkspace.PopulateFromName Request.QueryString("name")
-SetArticleTitle objWorkspace.Title
 
 ' Check if we are trying to operate on a workspace.
 If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
@@ -72,13 +70,39 @@ If Request.ServerVariables("REQUEST_METHOD") = "POST" Then
 		Response.End
 	End If
 Else
+	' Check if we need to delete a post.
+	If Request.QueryString("delete") <> vbNullString Then
+		Dim objDelPost
+		
+		' Get the post to be deleted.
+		Set objDelPost = New Post
+		objDelPost.PopulateFromID Request.QueryString("delete")
+		
+		' Actually delete the post and clean things up.
+		objDelPost.Trash
+		Set objDelPost = Nothing
+		
+		' Redirect to the page without the delete parameter.
+		If Request.QueryString("name") = vbNullString Then
+			Response.Redirect "/"
+		Else
+			Response.Redirect "/Workspace.asp?name=" & Request.QueryString("name")
+		End If
+	End If
+	
 	' Check if we actually have a workspace name to work with.
 	If Request.QueryString("name") = vbNullString Then
 		' Display the proper error.
 		Response.Status = "400 Bad Request"
 		Response.End
 	End If
+	
+	' Populate the workspace object.
+	objWorkspace.PopulateFromName Request.QueryString("name")
 End If
+
+' Set the article title.
+SetArticleTitle objWorkspace.Title
 %>
 
 <!-- #include virtual="/_includes/templates/header.asp" -->
@@ -134,8 +158,11 @@ End If
 						<a href="#post<%= objPost.ID %>">
 							<%= objPost.CreatedDate %>
 						</a>
-						<a href="<%= GetURLWithQueryString() & "&edit=" & objPost.ID %>">
-							<img class="edit" src="/assets/image/pencil.ico" />
+						<a class="icon" href="<%= GetURLWithQueryString() & "&edit=" & objPost.ID %>">
+							<img alt="Edit" src="/assets/image/pencil.bmp" />
+						</a>
+						<a class="icon" href="javascript:deletePost(<%= objPost.ID %>)">
+							<img alt="Delete" src="/assets/image/trash.bmp" />
 						</a>
 					</p>
 				<% End If %>
